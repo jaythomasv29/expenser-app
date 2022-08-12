@@ -16,6 +16,47 @@ body{
     background: var(--space-cadet-dark);
     font-size: 0.85rem;
 }
+
+header {
+  height: 50px;
+  /* color: #fff; */
+  background-color: #fff;
+}
+
+.top-navbar {
+  display: flex;
+  justify-content: space-between;
+  
+}
+
+.active {
+  text-decoration: underline;
+}
+
+.right-bar li:hover {
+  transition: 500ms;
+  transform: scale(1.25);
+}
+
+.top-navbar ul {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  height: 50px;
+  gap: 10px;
+  list-style: none;
+}
+
+.top-navbar li {
+  margin: 0 10px;
+  cursor: pointer
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
 h1 {
   color: #fff;
   font-size: 1rem;
@@ -25,19 +66,27 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 20%;
 }
+
 .container{
     min-height: 100vh;
+    position: relative;
+    
 }
 .divider-wrapper{
-    max-width: 1080px;
+  display: flex;
+  flex-direction: column;
+  
+    min-width: 400px;
     margin: 0 auto;
     background: #fff;
     overflow: hidden;
+    height: 930px;
 }
 
 .divider-wrapper:nth-child(2) {
-  height: 1000px;
+  /* height: 1000px; */
 }
 .title{
     background: var(--space-cadet);
@@ -48,12 +97,9 @@ h1 {
     text-align: center;
     color: #fff;
 }
-.bill-inputs, .bill-output{
+.expense-inputs, .expense-output{
     padding: 2rem 2rem;
     max-width: 400px;
-}
-.bill-inputs{
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .transaction-type {
@@ -122,3 +168,49 @@ h1 {
 .text-group span{
     font-weight: 600;
 }
+
+
+
+.transaction-card {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--space-cadet);
+  /* margin: 10px 0; */
+  
+}
+
+.transaction-details {
+  text-align: end;
+}
+
+.negative {
+  background-color: rgba(255, 0, 0, 0.225);
+}
+
+.positive {
+  background-color: rgba(87, 199, 87, 0.358);
+}
+
+#transaction-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+}
+
+.transaction-title {
+  text-align: center;
+}
+
+#transaction-totals {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  justify-content: center;
+  gap: 5px;
+  position: absolute;
+  bottom: 0;
+  padding: 2rem 2rem;
+}
+

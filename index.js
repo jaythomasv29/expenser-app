@@ -1,8 +1,22 @@
-/**
- *
- */
-const userTransactions = []; // or check with local storage
-const userBudget = {}; // or check with local storage
+window.addEventListener("load", (e) => {
+  document.querySelector("#transaction-form-container").style.display = "none";
+
+  if (JSON.parse(localStorage.getItem("budget"))) {
+    getBudgetValues();
+    document.querySelector("#transaction-form-container").style.display =
+      "block";
+    document.querySelector("#monthly-budget-container").style.display = "none";
+    document.querySelector(".reset-btn").style.display = "block";
+    displayTotalIncome();
+    displayTotalExpenses();
+    displayNetTotal();
+    // displayRemainingBudget()
+  }
+  // load transactions onto page
+});
+
+const userTransactions = JSON.parse(localStorage.getItem("transactions")) || [];
+const userBudget = {};
 const budgetForm = document.querySelector("#monthly-budget-form");
 const transactionForm = document.querySelector("#transaction-form");
 
@@ -36,6 +50,7 @@ budgetForm.addEventListener("submit", (e) => {
 
   const budgetDetails = getBudgetValues();
   displayBudgetValues(budgetDetails);
+  document.querySelector("#transaction-form-container").style.display = "block";
 });
 
 /**
@@ -44,7 +59,10 @@ budgetForm.addEventListener("submit", (e) => {
 transactionForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const transactionDetails = getTransactionDetails();
-  console.log(transactionDetails);
+  displayTotalIncome();
+  displayTotalExpenses();
+  displayRemainingBudget();
+  displayNetTotal();
 });
 
 function getTransactionDetails() {
@@ -53,23 +71,25 @@ function getTransactionDetails() {
     alert("You must select a transaction type");
     return;
   }
-  let category = null;
-  if (type === "expense") {
-    category = document.querySelector("#category").value;
-  }
+
   const transDate = $('input[name="date"]')
     .data("daterangepicker")
     .startDate.format("YYYY-MM-DD");
   const description = document.querySelector("#description").value;
   const amount = Number(document.querySelector("#transaction-amount").value);
-  userTransactions.push({ type, category, transDate, description, amount });
-  localStorage.setItem("transactions", JSON.parse(userTransactions));
+  userTransactions.push({ type, transDate, description, amount });
+  localStorage.setItem("transactions", JSON.stringify(userTransactions));
+  displayTransactions();
   transactionForm.reset();
 
-  return { type, category, transDate, description, amount };
+  return { id: createUid(), type, transDate, description, amount };
 }
 
 function getBudgetValues() {
+  let budgetData = JSON.parse(localStorage.getItem("budget"));
+  if (budgetData) {
+    return displayBudgetValues(budgetData);
+  }
   const totalBudget = Number(document.querySelector("#budget-total").value);
   const startDate = $('input[name="dates"]')
     .data("daterangepicker")
@@ -83,13 +103,25 @@ function getBudgetValues() {
     JSON.stringify({ totalBudget, totalDays, startDate, endDate })
   );
   document.querySelector("#monthly-budget-container").style.display = "none";
-  document.querySelector(".edit-btn").style.display = "block";
+  document.querySelector(".reset-btn").style.display = "block";
   return { totalBudget, totalDays, startDate, endDate };
 }
-document.querySelector(".edit-btn").addEventListener("click", () => {
-  document.querySelector(".edit-btn").style.display = "none";
+/**
+ * Toggle Edit Btn
+ */
+document.querySelector(".reset-btn").addEventListener("click", () => {
+  clearBudget();
+  document.querySelector(".reset-btn").style.display = "none";
   document.querySelector("#monthly-budget-container").style.display = "block";
 });
+
+function clearBudget() {
+  localStorage.removeItem("budget");
+  localStorage.removeItem("transactions");
+  displayBudgetValues();
+  displayTransactions();
+  location.reload();
+}
 
 function calculateTotalNumDays(startDate, endDate) {
   const start = new Date(startDate);
@@ -97,8 +129,19 @@ function calculateTotalNumDays(startDate, endDate) {
   return (end - start) / (1000 * 60 * 60 * 24);
 }
 
-function displayBudgetValues(budgetData) {
-  console.log(budgetData);
+function displayBudgetValues(
+  budgetData = {
+    totalBudget: 0,
+    totalDays: 0,
+    startDate: $('input[name="dates"]')
+      .data("daterangepicker")
+      .startDate.format("MM-DD-YYYY"),
+    endDate: $('input[name="dates"]')
+      .data("daterangepicker")
+      .endDate.format("MM-DD-YYYY"),
+  }
+) {
+  console.log("display", budgetData);
   document.querySelector(
     "#date-range"
   ).innerHTML = `${budgetData.startDate} to ${budgetData.endDate}`;
@@ -106,12 +149,44 @@ function displayBudgetValues(budgetData) {
     "#total-budget"
   ).innerHTML = `$ ${budgetData.totalBudget.toFixed(2)}`;
   document.querySelector("#total-days").innerHTML = `$ ${budgetData.totalDays}`;
-  document.querySelector("#average-spending").innerHTML = `$ ${(
-    budgetData.totalBudget / budgetData.totalDays
-  ).toFixed(2)}`;
+  const averageSpending = budgetData.totalBudget / budgetData.totalDays;
+  if (!averageSpending) {
+    document.querySelector("#average-spending").innerHTML = `$ ${(0).toFixed(
+      2
+    )}`;
+  } else {
+    document.querySelector("#average-spending").innerHTML = `$ ${(
+      budgetData.totalBudget / budgetData.totalDays
+    ).toFixed(2)}`;
+  }
   document.querySelector(
     "#remaining-budget"
   ).innerHTML = `$ ${budgetData.totalBudget.toFixed(2)}`;
+}
+/**
+ * Display Transactions to DOM
+ */
+
+function displayTransactions() {
+  const transactionContainer = document.querySelector("#transaction-output");
+  const transactions = JSON.parse(localStorage.getItem("transactions"));
+  if (!transactions) return;
+  console.log(transactions);
+  const transactionsMarkup = transactions.map((transaction) => {
+    return `<div class="${
+      transaction.type === "expense" ? "negative" : "positive"
+    } transaction-card" >
+    <div class="transaction-title">
+    <h3>${transaction.description} </h3>
+    <span>${transaction.transDate}</span>
+    </div>
+    <div class="transaction-details">
+    <h3>$ ${transaction.amount.toFixed(2)}</h3>
+    <span>${transaction.type}</span>
+    </div>
+      </div>`;
+  });
+  transactionContainer.innerHTML = transactionsMarkup.join("");
 }
 
 function createElement(tagName, attributes = {}, text) {
@@ -132,15 +207,55 @@ function createElement(tagName, attributes = {}, text) {
   return el;
 }
 
-document
-  .querySelector("#type")
-  .addEventListener("change", toggleExpenseOptions);
+/**
+ * Calculate and display sum of total transaction expenses / budget
+ */
+function calculateTransactions(type) {
+  if (!localStorage.getItem("transactions")) return;
+  const expenses = JSON.parse(localStorage.getItem("transactions")).filter(
+    (transaction) => transaction.type === type
+  );
+  const total = expenses.reduce((total, t) => total + t.amount, 0);
+  return total.toFixed(2);
+}
 
-function toggleExpenseOptions(e) {
-  console.log(e.target.value);
-  if (e.target.value === "income") {
-    document.querySelector(".expense-fields").style.display = "none";
-  } else {
-    document.querySelector(".expense-fields").style.display = "block";
-  }
+function displayTotalExpenses() {
+  document.querySelector("#total-transaction-expenses").innerHTML =
+    calculateTransactions("expense");
+}
+
+function displayTotalIncome() {
+  document.querySelector("#total-transaction-income").innerHTML =
+    calculateTransactions("income");
+}
+
+function displayNetTotal() {
+  const netTotal = (
+    calculateTransactions("income") - calculateTransactions("expense")
+  ).toFixed(2);
+  document.querySelector("#net-total-transaction").innerHTML = netTotal;
+}
+
+function createUid() {
+  return (
+    Date.now().toString(36) +
+    Math.floor(
+      Math.pow(10, 12) + Math.random() * 9 * Math.pow(10, 12)
+    ).toString(36)
+  );
+}
+
+function calculateRemainingBudget() {
+  if (!localStorage.getItem("budget")) return;
+  const initialBudget = JSON.parse(localStorage.getItem("budget")).totalBudget;
+  const remainingBudget =
+    Number(initialBudget) -
+    Number(calculateTransactions("expense")) +
+    Number(calculateTransactions("income"));
+  return remainingBudget.toFixed(2);
+}
+
+function displayRemainingBudget() {
+  document.querySelector("#remaining-budget").innerHTML =
+    calculateRemainingBudget();
 }

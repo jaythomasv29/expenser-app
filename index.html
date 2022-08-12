@@ -13,170 +13,187 @@
   </head>
 
   <body>
-    <div class="container center">
-      <div class="divider-wrapper">
-        <div class="title">
-          <h1>Total Month's Budget</h1>
-        </div>
-        <div>
-          
-          <div class="bill-inputs" id="monthly-budget-container">
-            <form id="monthly-budget-form">
-              <div class="form-group">
-                <label for="days-in-month">Start - End Date</label><small> * Select Month</small>
-                <input
-                  type="text"
-                  id="days-in-month"
-                  class="form-control"
-                  name="dates"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label for="subtotal">Total Budget (&dollar;)</label>
-                <input
-                  type="number"
-                  id="budget-total"
-                  class="form-control"
-                  min="0"
-                  step="any"
-                  required
-                />
-              </div>
-              <input type="submit" id="calc-btn" value="Save" />
-            </form>
+    <div class="container">
+      <header>
+        <nav class="top-navbar">
+          <div class="left-bar">
+            <ul>
+              <li><h2>Monthly Expenser</h2></li>
+            </ul>
           </div>
-
-          <div class="bill-output" id="monthly-budget-output">
-            <div class="text-group">
-              <h3>Total Budget</h3>
-              <span id="total-budget">$ 00.00</span>
-            </div>
-            <div class="text-group">
-              <h3>Date Range</h3>
-              <span id="date-range"></span>
-            </div>
-            <div class="text-group">
-              <h3>Total Days</h3>
-              <span id="total-days">0</span>
+          <div class="right-bar">
+              <ul>
+              <li><a href="./about.html">About</a></li>
+              <li><a href="./expensify.html">Fixed Expenser</a></li>
+              <li class="active">Monthly Expenser</li>
+            </ul>
             </div>
 
-            <div class="text-group">
-              <h3>Budget / Day <small>* Recommended</small></h3>
-              <span id="average-spending">$ 00.00</span>
-            </div>
-            <hr />
-            <div class="text-group">
-              <h3>Your Average Spending / Day</h3>
-              <span id="">$ 00.00</span>
-            </div>
-
-            <div class="text-group">
-              <h3>Remaining Budget</h3>
-              <span id="remaining-budget">$ 00.00</span>
-            </div>
-            <input type="button" class="edit-btn" id="calc-btn" value="Edit" />
+        </nav>
+      </header>
+      <main class="center">
+        <div class="divider-wrapper">
+          <div class="title">
+            <h1>Total Month's Budget</h1>
           </div>
-        </div>
-        <!-- Transaction -->
-        <div class="title">
-          <h1>Enter Transaction</h1>
-        </div>
-        <div class="bill-inputs">
-          <form id="transaction-form">
-            <div class="transaction-type">
-
-              <div class="form-group">
-                <select name="type" id="type">
-                  <option value="">Select Type</option>
-                  <option value="expense">Expense</option>
-                  <option value="income">Income</option>
-                </select>
-              </div>
-              <div class="form-group expense-fields">
-                <select name="category" id="category">
-                  <option value="">Category</option>
-                  <option value="variable">Varying expenses</option>
-                  <option value="fixed">Fixed expenses</option>
-                  <option value="misc">Non-Essential</option>
-                </select>
-              </div>
+          <div>
+            <div class="expense-inputs" id="monthly-budget-container">
+              <form id="monthly-budget-form">
+                <div class="form-group">
+                  <label for="days-in-month">Start - End Date</label
+                  ><small> * Select Month</small>
+                  <input
+                    type="text"
+                    id="days-in-month"
+                    class="form-control"
+                    name="dates"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="subtotal">Total Budget (&dollar;)</label>
+                  <input
+                    type="number"
+                    id="budget-total"
+                    class="form-control"
+                    min="0"
+                    step="any"
+                    required
+                  />
+                </div>
+                <input type="submit" id="calc-btn" value="Save" />
+              </form>
             </div>
-            <div class="form-group">
-              <div class="form-group">
-                <label for="days-in-month">Transaction Date</label>
-                <input
-                  type="text"
-                  id="days-in-month"
-                  class="form-control"
-                  name="date"
-                  required
-                />
+
+            <div class="expense-output" id="monthly-budget-output">
+              <div class="text-group">
+                <h3>Initial Total Budget</h3>
+                <span id="total-budget">$ 00.00</span>
               </div>
-              <label for="description"
-                >Description</label
+              <div class="text-group">
+                <h3>Date Range</h3>
+                <span id="date-range"></span>
+              </div>
+              <div class="text-group">
+                <h3>Total Days</h3>
+                <span id="total-days">0</span>
+              </div>
+
+              <div class="text-group">
+                <h3>Budget / Day <small>* Recommended</small></h3>
+                <span id="average-spending">$ 00.00</span>
+              </div>
+              <hr />
+
+              <div class="text-group">
+                <h3>Remaining Budget</h3>
+                <span id="remaining-budget">$ 00.00</span>
+              </div>
+              <input
+                type="button"
+                class="reset-btn"
+                id="calc-btn"
+                value="Reset"
+              />
+              <br />
+              <small
+                >* Note: Resetting will delete budget and transaction
+                data</small
               >
-              <input
-                type="text"
-                id="description"
-                class="form-control"
-                required
-              />
+            </div>
+          </div>
+          <!-- Transaction -->
+          <div id="transaction-form-container">
+            <div class="title" id="transaction-form-title">
+              <h1>Enter Transaction</h1>
+            </div>
+            <div class="expense-inputs">
+              <form id="transaction-form">
+                <div class="transaction-type">
+                  <div class="form-group">
+                    <select name="type" id="type">
+                      <option value="">Select Type</option>
+                      <option value="expense">Expense</option>
+                      <option value="income">Income</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="form-group">
+                    <label for="days-in-month">Transaction Date</label>
+                    <input
+                      type="text"
+                      id="days-in-month"
+                      class="form-control"
+                      name="date"
+                      required
+                    />
+                  </div>
+                  <label for="description">Description</label>
+                  <input
+                    type="text"
+                    id="description"
+                    class="form-control"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="transaction-amount">Amount (&dollar;)</label>
+                  <input
+                    type="number"
+                    id="transaction-amount"
+                    class="form-control"
+                    min="0.01"
+                    step="any"
+                    required
+                  />
+                </div>
+
+                <input type="submit" id="calc-btn" value="Add Transaction" />
+                <br />
+                <small
+                  >* Transactions are stored to keep track of finances and are
+                  totaled to help you manage your spending for a given
+                  month</small
+                >
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider-wrapper" id="transaction-container">
+          <div class="title">
+            <h1>Total Transactions</h1>
+          </div>
+
+          <div class="expense-output" id="transaction-output"></div>
+          <div id="transaction-totals">
+            <div class="transaction-title">
+              <h2>Total Income / Expense</h2>
+            </div>
+            <div class="text-group">
+              <h3>Total Additional Income (+)</h3>
+              <span id="total-transaction-income">$ 00.00</span>
             </div>
 
-            <div class="form-group">
-              <label for="transaction-amount">Amount (&dollar;)</label>
-              <input
-                type="number"
-                id="transaction-amount"
-                class="form-control"
-                min="0.01"
-                step="any"
-                
-                required
-              />
+            <div class="text-group">
+              <h3>Total Expenses (-)</h3>
+              <span id="total-transaction-expenses">$ 00.00</span>
             </div>
 
-            <input type="submit" id="calc-btn" value="calculate" />
-          </form>
-        </div>
+            <div class="text-group">
+              <h3>Net Total</h3>
+              <span id="net-total-transaction">$ 00.00</span>
+            </div>
 
-     
-      </div>
-
-      <div class="divider-wrapper">
-        <div class="title">
-          <h1>Total Expense</h1>
-        </div>
-
-        <div class="bill-inputs">
-          <form id="bill-divider-form">
-          
-          </form>
-        </div>
-
-        <div class="bill-output">
-          <div class="text-group">
-            <h3>Total Bill</h3>
-            <span id="total-bill">$ 00.00</span>
-          </div>
-
-          <div class="text-group">
-            <h3>Bill Per Person</h3>
-            <span id="bill-per-person">$ 00.00</span>
-          </div>
-
-          <div class="text-group">
-            <h3>Total Tip</h3>
-            <span id="total-tip">$ 00.00</span>
-          </div>
-
-          <div class="text-group">
-            <h3>Tip Per Person</h3>
-            <span id="tip-per-person">$ 00.00</span>
+            <div class="text-group">
+              <h3>Projected Avg. Spending / Day</h3>
+              <span id="net-total-transaction">$ 00.00</span>
+            </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
 
     <script
