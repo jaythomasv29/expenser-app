@@ -10,7 +10,7 @@ window.addEventListener("load", (e) => {
     displayTotalIncome();
     displayTotalExpenses();
     displayNetTotal();
-    // displayRemainingBudget()
+    displayTransactions()
   }
   // load transactions onto page
 });
